@@ -1,0 +1,212 @@
+>> M = 1;
+>> m = 0.5;
+>> b = 0.1;
+>> I = O.OO8;
+Unable to resolve the name 'O.OO8'.
+ 
+>> I = 0.008
+
+I =
+
+    0.0080
+
+>> g = 9.8;
+>> l = 0.4;
+>> q = (M+m)*(I+m*l^2)-(m*l)^2;
+>> s = tf('s');
+>> P_cart = (((I+m*l^2)/q)*s^2 - (m*g*l/q))/(s^4 + (b*(I + m*l^2))*s^3/q - ((M + m)*m*g*l)*s^2/q - b*m*g*l*s/q);)
+ P_cart = (((I+m*l^2)/q)*s^2 - (m*g*l/q))/(s^4 + (b*(I + m*l^2))*s^3/q - ((M + m)*m*g*l)*s^2/q - b*m*g*l*s/q);)
+                                                                                                              ↑
+Error: Unmatched ')'. Check for missing '('.
+ 
+>> P_cart = (((I+m*l^2)/q)*s^2 - (m*g*l/q))/(s^4 + (b*(I + m*l^2))*s^3/q - ((M + m)*m*g*l)*s^2/q - b*m*g*l*s/q);
+>> P_pend = (m*l*s/q)/(s^3 + (b*(I + m*l^2))*s^2/q - ((M + m)*m*g*l)*s/q - b*m*g*l/q);
+>> sys_tf = [P_cart ; P_pend];
+>> inputs = {'u'};
+>> outputs = {'x'; 'phi'};
+>> set(sys_tf,'InputName',inputs)
+>> set(sys_tf,'OutputName',outputs)
+>> sys_tf
+
+sys_tf =
+ 
+  From input "u" to output...
+                                            
+                     0.0007448 s^2 - 0.01659
+                                            
+   x:  ----------------------------------------------------
+                                                           
+       0.0007787 s^4 + 7.448e-05 s^3 - 0.02488 s^2         
+                                                           
+                                               - 0.001659 s
+                                                           
+ 
+                                       
+                             0.001693 s
+                                       
+   phi:  --------------------------------------------------
+                                                           
+         0.0007787 s^3 + 7.448e-05 s^2 - 0.02488 s         
+                                                           
+                                                 - 0.001659
+                                                           
+ 
+Continuous-time transfer function.
+Model Properties
+
+>> % no. 2
+>> p = I*(M+m)+M*m*l^2
+
+p =
+
+    0.0920
+
+>> A = [0      1              0           0;
+     0 -(I+m*l^2)*b/p  (m^2*g*l^2)/p   0;
+     0      0              0           1;
+     0 -(m*l*b)/p       m*g*l*(M+m)/p  0];
+>> B = [ 0; (I+m*l^2)/p; 0; m*l/p];
+>> C = [1 0 0 0; 0 0 1 0];
+>> D = [0; 0];
+>> states = {'x' 'x_dot' 'phi' 'phi_dot'};
+>> inputs = {'u'};
+>> outputs = {'x'; 'phi'};
+>> sys_ss = ss(A,B,C,D,'statename',states,'inputname',inputs,'outputname',outputs)
+
+sys_ss =
+ 
+  A = 
+                   x     x_dot       phi   phi_dot
+   x               0         1         0         0
+   x_dot           0  -0.09565     4.261         0
+   phi             0         0         0         1
+   phi_dot         0   -0.2174     31.96         0
+ 
+  B = 
+                 u
+   x             0
+   x_dot    0.9565
+   phi           0
+   phi_dot   2.174
+ 
+  C = 
+              x    x_dot      phi  phi_dot
+   x          1        0        0        0
+   phi        0        0        1        0
+ 
+  D = 
+        u
+   x    0
+   phi  0
+ 
+Continuous-time state-space model.
+Model Properties
+
+>> % no. 3
+>> sys_tf = tf(sys_ss)
+
+sys_tf =
+ 
+  From input "u" to output...
+                 0.9565 s^2 - 21.3
+   x:  --------------------------------------
+       s^4 + 0.09565 s^3 - 31.96 s^2 - 2.13 s
+ 
+                2.174 s - 6.951e-18
+   phi:  ----------------------------------
+         s^3 + 0.09565 s^2 - 31.96 s - 2.13
+ 
+Continuous-time transfer function.
+Model Properties
+>> 
+
+>> % no.4
+>> t=0:0.01:1;
+>> impulse(sys_tf,t);
+
+>> title('Open-Loop Impulse Response')
+>> 
+
+>> % no. 5
+>> [zeros poles] = zpkdata(P_pend,'v')
+
+zeros =
+
+     0
+
+
+poles =
+
+    5.6387
+   -5.6677
+   -0.0667
+
+>> [zeros poles] = zpkdata(P_cart,'v')
+
+zeros =
+
+    4.7194
+   -4.7194
+
+
+poles =
+
+         0
+    5.6387
+   -5.6677
+   -0.0667
+>> figure;
+>> subplot(1,2,1)
+>> pzmap(P_pend)
+>> grid on
+>> title('Pole-Zero Map P_{pend}')
+>> 
+>> subplot(1,2,2)
+>> pzmap(P_cart)
+>> grid on
+>> title('Pole-Zero Map P_{cart}')
+>> 
+
+>> % no. 6
+>> t = 0:0.05:10;
+>> u = ones(size(t));
+>> [y,t] = lsim(sys_tf,u,t);
+>> plot(t,y)
+>> title('Open-Loop Step Response')
+>> axis([0 3 0 50])
+>> legend('x','phi')
+>>
+
+>> % no.7 
+>> step_info = lsiminfo(y,t);
+>> cart_info = step_info(1)
+
+cart_info = 
+
+struct with fields:
+
+TransientTime: 9.9959
+SettlingTime: 9.9959
+Peak: 1.3679e+22
+PeakTime: 10
+Min: 0
+MinTime: 0
+Max: 1.3679e+22
+MaxTime: 10
+
+>> pend_info = step_info(2)
+
+pend_info = 
+
+  struct with fields:
+
+    TransientTime: 9.9959
+     SettlingTime: 9.9959
+             Peak: 1.0380e+23
+         PeakTime: 10
+              Min: 0
+          MinTime: 0
+              Max: 1.0380e+23
+          MaxTime: 10
+
+
