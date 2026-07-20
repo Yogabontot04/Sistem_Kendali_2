@@ -1,0 +1,171 @@
+>> M = 5;
+>> b = 10;
+>> k = 20;
+>> F = 1;
+>> 
+>> % PENGUJIAN NILAI Kp
+>> Ki = 550;
+>> Kd = 35;
+>> nilai_Kp = [300 350 400 450 500];
+>> disp('PENGUJIAN NILAI Kp');
+PENGUJIAN NILAI Kp
+>> for i=1:length(nilai_Kp)
+    Kp = nilai_Kp(i);
+    Fs = [Kd Kp Ki];
+    Xs = [M (b+Kd) (k+Kp) Ki];
+    sys = tf(Fs,Xs);
+    info = stepinfo(sys);
+    fprintf('\nKp = %.0f\n',Kp);
+    fprintf('Rise Time      = %.4f s\n',info.RiseTime);
+    fprintf('Overshoot      = %.2f %%\n',info.Overshoot);
+    fprintf('Settling Time  = %.4f s\n',info.SettlingTime);
+    fprintf('Steady State   = %.4f\n',dcgain(sys));
+    figure(i)
+    step(sys,0:0.01:10);
+    grid on
+    title(['Step Response Kp = ',num2str(Kp)]);
+    xlabel('Time (s)');
+    ylabel('Amplitude');
+end
+
+Kp = 300
+Rise Time = 0.1391 s
+Overshoot = 25.17 %
+Settling Time = 1.1146 s
+Steady State = 1.0000
+
+Kp = 350
+Rise Time = 0.1298 s
+Overshoot = 26.56 %
+Settling Time = 1.0147 s
+Steady State = 1.0000
+
+Kp = 400
+Rise Time = 0.1222 s
+Overshoot = 27.97 %
+Settling Time = 0.9370 s
+Steady State = 1.0000
+
+Kp = 450
+Rise Time = 0.1158 s
+Overshoot = 29.29 %
+Settling Time = 0.8744 s
+Steady State = 1.0000
+
+Kp = 500
+Rise Time = 0.1104 s
+Overshoot = 30.61 %
+Settling Time = 0.8228 s
+Steady State = 1.0000
+>> 
+>> % PENGUJIAN NILAI Ki
+>> Kp = 300;
+>> Kd = 35;
+>> nilai_Ki = [550 600 700 800 900];
+>> disp('PENGUJIAN NILAI Ki');
+PENGUJIAN NILAI Ki
+>> for i=1:length(nilai_Ki)
+    Ki = nilai_Ki(i);
+    Fs = [Kd Kp Ki];
+    Xs = [M (b+Kd) (k+Kp) Ki];
+    sys = tf(Fs,Xs);
+    info = stepinfo(sys);
+    fprintf('\nKi = %.0f\n',Ki);
+    fprintf('Rise Time      = %.4f s\n',info.RiseTime);
+    fprintf('Overshoot      = %.2f %%\n',info.Overshoot);
+    fprintf('Settling Time  = %.4f s\n',info.SettlingTime);
+    fprintf('Steady State   = %.4f\n',dcgain(sys));
+    figure(i+5)
+    step(sys,0:0.01:10);
+    grid on
+    title(['Step Response Ki = ',num2str(Ki)]);
+    xlabel('Time (s)');
+    ylabel('Amplitude');
+end
+
+Ki = 550
+Rise Time = 0.1391 s
+Overshoot = 25.17 %
+Settling Time = 1.1146 s
+Steady State = 1.0000
+
+Ki = 600
+Rise Time = 0.1383 s
+Overshoot = 26.17 %
+Settling Time = 1.1161 s
+Steady State = 1.0000
+
+Ki = 700
+Rise Time = 0.1369 s
+Overshoot = 28.16 %
+Settling Time = 1.1175 s
+Steady State = 1.0000
+
+Ki = 800
+Rise Time = 0.1356 s
+Overshoot = 30.09 %
+Settling Time = 1.4171 s
+Steady State = 1.0000
+
+Ki = 900
+Rise Time = 0.1343 s
+Overshoot = 31.95 %
+Settling Time = 1.4970 s
+Steady State = 1.0000
+>> 
+>> %  PENGUJIAN NILAI Kd
+>> Kp = 300;
+>> Ki = 550;
+>> nilai_Kd = [35 40 45 50 55];
+>> disp('PENGUJIAN NILAI Kd');
+PENGUJIAN NILAI Kd
+>> for i=1:length(nilai_Kd)
+    Kd = nilai_Kd(i);
+    Fs = [Kd Kp Ki];
+    Xs = [M (b+Kd) (k+Kp) Ki];
+    sys = tf(Fs,Xs);
+    info = stepinfo(sys);
+    fprintf('\nKd = %.0f\n',Kd);
+    fprintf('Rise Time      = %.4f s\n',info.RiseTime);
+    fprintf('Overshoot      = %.2f %%\n',info.Overshoot);
+    fprintf('Settling Time  = %.4f s\n',info.SettlingTime);
+    fprintf('Steady State   = %.4f\n',dcgain(sys));
+    figure(i+10)
+    step(sys,0:0.01:10);
+    grid on
+    title(['Step Response Kd = ',num2str(Kd)]);
+    xlabel('Time (s)');
+    ylabel('Amplitude');
+end
+
+Kd = 35
+Rise Time      = 0.1391 s
+Overshoot      = 25.17 %
+Settling Time  = 1.1146 s
+Steady State   = 1.0000
+
+Kd = 40
+Rise Time      = 0.1358 s
+Overshoot      = 21.47 %
+Settling Time  = 1.1386 s
+Steady State   = 1.0000
+
+Kd = 45
+Rise Time      = 0.1325 s
+Overshoot      = 18.41 %
+Settling Time  = 1.1527 s
+Steady State   = 1.0000
+
+Kd = 50
+Rise Time      = 0.1290 s
+Overshoot      = 15.81 %
+Settling Time  = 1.1489 s
+Steady State   = 1.0000
+
+Kd = 55
+Rise Time      = 0.1256 s
+Overshoot      = 13.59 %
+Settling Time  = 1.1080 s
+Steady State   = 1.0000
+>> 
+
